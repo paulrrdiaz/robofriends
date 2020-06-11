@@ -1,24 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import debounce from "lodash/debounce";
+import Card from "components/Card";
+import SearchBox from "components/SearchBox";
+import ROBOTS from "data/robots";
 
 function App() {
+  const [robots, setRobots] = useState(ROBOTS);
+  const [search, setSearch] = useState("");
+
+  const onSearchChange = debounce((value) => {
+    setSearch(value);
+  }, 300);
+
+  useEffect(() => {
+    const filteredRobots = ROBOTS.filter((robot) =>
+      robot.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+    );
+
+    search.length ? setRobots(filteredRobots) : setRobots(ROBOTS);
+  }, [search]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="tc">
+      <h1 className="f-headline mb3 white">RoboFriends</h1>
+      <SearchBox onChange={(e) => onSearchChange(e.target.value)} />
+      {robots.map((robot, index) => (
+        <Card key={index} {...robot} />
+      ))}
     </div>
   );
 }
