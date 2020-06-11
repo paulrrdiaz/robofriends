@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import debounce from "lodash/debounce";
 import axios from "axios";
-import Card from "components/Card";
+import CardList from "components/CardList";
 import SearchBox from "components/SearchBox";
 import Scroll from "components/Scroll";
+import ErrorBoundry from "components/ErrorBoundry";
 
 function App() {
   const [robots, setRobots] = useState([]);
@@ -42,9 +43,9 @@ function App() {
       <h1 className="f1 lh-title mt4 mb3 white">RoboFriends</h1>
       <SearchBox onChange={(e) => onSearchChange(e.target.value)} />
       <Scroll>
-        {filteredRobots.map((robot, index) => (
-          <Card key={index} {...robot} />
-        ))}
+        <ErrorBoundry>
+          <CardList robots={filteredRobots} />
+        </ErrorBoundry>
       </Scroll>
     </div>
   );
