@@ -1,0 +1,6 @@
+@media screen and (max-width: 600px) {
+  .scroll {
+    max-height: calc(100vh - 190px);
+    overflow-y: scroll;
+  }
+}
