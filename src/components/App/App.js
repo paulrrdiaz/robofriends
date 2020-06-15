@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import debounce from "lodash/debounce";
 import axios from "axios";
+import { setSearchField } from "store/actions";
 import CardList from "components/CardList";
 import SearchBox from "components/SearchBox";
 import Scroll from "components/Scroll";
 import ErrorBoundry from "components/ErrorBoundry";
 
-function App() {
+function App({ searchField, setSearchField }) {
   const [robots, setRobots] = useState([]);
   const [filteredRobots, setFilteredRobots] = useState([]);
-  const [search, setSearch] = useState("");
 
   const fetchRobots = async () => {
     try {
@@ -27,16 +28,16 @@ function App() {
   }, []);
 
   const onSearchChange = debounce((value) => {
-    setSearch(value);
+    setSearchField(value);
   }, 300);
 
   useEffect(() => {
     const filteredRobots = robots.filter((robot) =>
-      robot.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+      robot.name.toLocaleLowerCase().includes(searchField.toLocaleLowerCase())
     );
 
     setFilteredRobots(filteredRobots);
-  }, [search, robots]);
+  }, [searchField, robots]);
 
   return (
     <div className="tc">
@@ -51,4 +52,10 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  searchField: state.searchRobots.searchField,
+});
+
+export default connect(mapStateToProps, {
+  setSearchField,
+})(App);
