@@ -1,43 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import debounce from "lodash/debounce";
-import axios from "axios";
-import { setSearchField } from "store/actions";
+import { setSearchField, requestRobots } from "store/actions";
 import CardList from "components/CardList";
 import SearchBox from "components/SearchBox";
 import Scroll from "components/Scroll";
 import ErrorBoundry from "components/ErrorBoundry";
 
-function App({ searchField, setSearchField }) {
-  const [robots, setRobots] = useState([]);
+function App({ searchField, setSearchField, robotsList, requestRobots }) {
   const [filteredRobots, setFilteredRobots] = useState([]);
 
-  const fetchRobots = async () => {
-    try {
-      const { data } = await axios.get(
-        "https://jsonplaceholder.typicode.com/users"
-      );
-      setRobots(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   useEffect(() => {
-    fetchRobots();
-  }, []);
+    requestRobots();
+  }, [requestRobots]);
 
   const onSearchChange = debounce((value) => {
     setSearchField(value);
   }, 300);
 
   useEffect(() => {
-    const filteredRobots = robots.filter((robot) =>
+    const filteredRobots = robotsList.filter((robot) =>
       robot.name.toLocaleLowerCase().includes(searchField.toLocaleLowerCase())
     );
 
     setFilteredRobots(filteredRobots);
-  }, [searchField, robots]);
+  }, [searchField, robotsList]);
 
   return (
     <div className="tc">
@@ -52,10 +39,12 @@ function App({ searchField, setSearchField }) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  searchField: state.searchRobots.searchField,
+const mapStateToProps = ({ robots: { searchField, robotsList } }) => ({
+  searchField,
+  robotsList,
 });
 
 export default connect(mapStateToProps, {
   setSearchField,
+  requestRobots,
 })(App);
