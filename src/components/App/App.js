@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import debounce from "lodash/debounce";
 import { setSearchField, requestRobots } from "store/actions";
+import Header from "components/Header";
 import CardList from "components/CardList";
 import SearchBox from "components/SearchBox";
 import Scroll from "components/Scroll";
@@ -28,7 +29,7 @@ function App({ searchField, setSearchField, robotsList, requestRobots }) {
 
   return (
     <div className="tc">
-      <h1 className="f1 lh-title mt4 mb3 white">RoboFriends</h1>
+      <Header />
       <SearchBox onChange={(e) => onSearchChange(e.target.value)} />
       <Scroll>
         <ErrorBoundry>
